@@ -1,0 +1,31 @@
+<!--product.html-->
+{% extends 'base.html' %}
+{% block title %}{{product.name}} |{% endblock %}
+{% block content %}
+<div class="container">
+	{% for m in messages %}
+		<div class="alert alert-{{ m.tags }}">{{m}}</div>
+	{% endfor %}
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-primary">
+				<div class="panel-heading" align="center">
+					<h3>{{product.name | default:'product id is wrong'}}</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-offset-1 col-sm-6">
+			<img src="{{ product.image.url }}" width="100%">
+		</div>
+		<div class="col-sm-4">
+			<h2>{{product.name}}</h2>
+			<h3>price:{{product.price}}元<br>
+				stock:{{product.stock}}</h3>
+			<p>{{product.description|linebreaks}}</p>
+		</div>
+	</div>
+</div>
+{% endblock %}

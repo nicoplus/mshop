@@ -1,0 +1,56 @@
+<!-- header.html (ch09www project) -->
+    <nav class='navbar navbar-default'>
+        <div class='container-fluid'>
+            <div class='navbar-header'>
+                <div class='navbar-brand' align=center>
+                    M-Shop
+                </div>
+            </div>
+            {% load account  %}
+            <ul class='nav navbar-nav'>
+                <li class='active'><a href='/'>Home</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle='dropdown' href="#">Products<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        {% for cate in all_categories %}
+                        <li><a href="/{{ cate.id }}">{{ cate.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% if request.user.is_authenticated %}
+                <li><a href="{% url 'account_reset_password' %}">Reset Password</a></li>
+                <li><a href="{% url 'account_logout' %}">Logout</a></li>
+                <li><a href="{% url 'account_email' %}">Change Email</a></li>
+                {% else %}
+                <li><a href="{% url 'account_login' %}">Login</a></li>
+                <li><a href="{% url 'account_signup' %}">Register</a></li>
+                {% endif %}
+                <li><a href="/admin">Admin</a></li>
+            </ul>
+            <!--在右边栏做客户信息，登录登出， 以后再改-->
+            {% if user.is_authenticated %}
+            <ul class="nav navbar-nav navbar-right" vertical-align='middle'>
+                <li >
+                    <a href="{% url 'cart' %}"  style="color: orange">
+                        <span id='cart_num' class="glyphicon glyphicon-shopping-cart " ></span>
+
+                    </a>
+
+                </li>
+                <li><a href="#">{{ user.username }}</a></li>
+            </ul>
+            {% endif %}
+        </div>
+    </nav>
+
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                type:'GET',
+                url:'{% url 'cart_num' %}',
+                success: function(response){
+                    $('#cart_num').html(response['cart_num'])
+                }
+            })
+        })
+    </script>
