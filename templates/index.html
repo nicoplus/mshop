@@ -34,11 +34,11 @@
 	</div>
 
 
-
+	<div id='mansory' class="row">
 	{% for product in products %}
-		{% cycle '<div class="row ">' '' '' '' %}
-			<div class="col-xs-3 col-md-3 col-sm-3 ">
-				<div class="thumbnail">
+
+
+				<div class="thumbnail" data-order='{{product.id}}'>
 					<img src="{{ product.image.url }}">
 					<div class="caption">
 						<h4><a href="{% url 'product_url'  product.id %}">{{ product.name }}</a></h4>
@@ -48,15 +48,16 @@
 						<button class="btn btn-primary" id='add_cart_{{product.id}}' >添加到购物车</button>
 					</div>
 				</div>
-			</div>
-		{% cycle '' '' '' '</div>' %}
+
+
 	{% empty %}
-		<div class="row">
+
 			<div class="col-sm-12" align="center">
 				<h3>No products</h3>
 			</div>
-		</div>
+
 	{% endfor %}
+	</div>
 
 	<div class="row" align="center">
 		<div class="col-sm-12">
@@ -82,6 +83,7 @@
 	var log = console.log.bind(console)
 	$(document).ready(function(){
 		{% for product in products %}
+		//将商品添加到购物车，并改变购物车显示数字
 		$('#add_cart_{{ product.id }}').click(function(){
 			$.ajax({
 				type:'GET',
@@ -98,6 +100,22 @@
 			})
 		})
 		{% endfor %}
+
+		//瀑布流mansory
+		$('#mansory').mpmansory({
+		  childrenClass: '', // default is a div
+	      columnClasses: '', //add classes to items
+	      breakpoints:{
+	        lg: 3, 
+	        md: 4, 
+	        sm: 6,
+	        xs: 12
+	      },
+	      distributeBy: { order: false, height: false, attr: 'data-order', attrOrder: '-asc' }, 
+	      onload: function (items) {
+	        //make somthing with items
+		  }
+		})
 	})
 </script>
 
