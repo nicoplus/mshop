@@ -1,4 +1,4 @@
-<!--cart.html-->
+<!--order.html-->
 
 {% extends 'base.html' %}
 {% block title %} Cart |  {% endblock %}
@@ -9,16 +9,6 @@
 	{% endfor %}
 
 	<div class="row">
-
-			<div class="panel panel-primary">
-				<div class="panel-heading">
-					<h3>Checking Shopping Cart</h3>
-				</div>
-			</div>
-		
-	</div>
-
-	<div class="row">
 		<div class="panel panel-info">
 			<div class="panel panel-heading" align="center">
 				<h3>我的购物车</h3>
@@ -27,7 +17,7 @@
 				<div class="row" >
 				{% for item in cart %}
 					<div class="col-md-12">
-						<div class="col-md-4">
+						<div class="col-md-offset-2 col-md-4">
 							<p>{{ item.product.name }}</p>
 						</div>
 						<div class="col-md-2">
@@ -38,11 +28,7 @@
 						</div>
 						<div class="col-md-2">
 							<p>小计:{{ item.total_price }}元</p>
-						</div>
-						<div class="col-md-2" align="center" >
-							<a href="{% url 'removeitem_id' item.product.id %}"><span class="glyphicon glyphicon-trash"></span></a>
-						</div>
-						
+						</div>						
 					</div>
 					<hr>
 				{% empty %}
@@ -50,12 +36,21 @@
 						<h3>购物车为空~~</h3>
 					</div>
 				{% endfor %}
+					<div class="col-md-12" align="right">
+						<button class="btn btn-warning"><a href="/cart/">回购物车</a></button>
+					</div>
 				</div>
 			</div>
 
 			<div class=" panel-footer" align="right">
 				<p>总计:{{ cart.summary }} 元</p>
-				<button class="btn btn-primary"><a href="/order/" style="color: white">我要订购</a></button>
+				<form action="." method="post">
+					{% csrf_token %}
+					<table>
+						{{order_form.as_table}}
+					</table>
+					<input type="submit" value="下单">
+				</form>
 			</div>
 		</div>
 	</div>

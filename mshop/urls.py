@@ -22,11 +22,13 @@ from mysite import views
 
 
 urlpatterns = [
+    url(r'^order/$', views.order),
+    url(r'^myorders/$', views.my_orders),
     url(r'^removeitem/(\d+)/$', views.remove_from_cart, name='removeitem_id'),
-    url(r'^go_cart_num/$', views.go_cart_num, name='cart_num'),
+    url(r'^api/cart_num/$', views.go_cart_num, name='cart_num'),
     url(r'^cart/$', views.cart, name='cart'),
     url(r'^additem/(\d+)/(\d+)/$', views.add_to_cart, name = 'additem_id'),
-    url(r'^go_add/(\d+)/(\d+)/$', views.go_add, name='go_add'),
+    url(r'^api/add/(\d+)/(\d+)/$', views.go_add, name='go_add'),
     url(r'^product/(\d+)$', views.product, name='product_url'),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^(\d*)$', views.index),

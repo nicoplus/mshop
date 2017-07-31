@@ -1,0 +1,70 @@
+<!--myorders.html-->
+
+{% extends 'base.html' %}
+{% block title %} My Orders |  {% endblock %}
+{% block content %}
+<div class="container">
+	{% for m in messages %}
+		<div class="alert alert-{{m.tags}}">{{m}}</div>
+	{% endfor %}
+
+	<div class="row">
+		<div class="panel panel-info">
+			<div class="panel panel-heading" align="center">
+				<h3>我的订单</h3>
+			</div>
+			<div class="panel panel-body">
+				<div class="row" >
+				{% for item in orders %}
+					<div class="col-md-12" align="center">
+					{% if forloop.first %}
+						<div class="col-md-4">
+							<b>订单号</b>
+						</div>
+						<div class="col-md-2">
+							<b>姓名</b>
+						</div>
+						<div class="col-md-2">
+							<b>地址</b>
+						</div>
+						<div class="col-md-2">
+							<b>订购时间</b>
+						</div>		
+						<div class="col-md-2">
+							<b>是否付款</b>
+						</div>
+						<hr>
+					{% endif %}
+						<div class="col-md-4">
+							<p>{{ item.id }}</p>
+						</div>
+						<div class="col-md-2">
+							<p>{{ item.full_name }}</p>
+						</div>
+						<div class="col-md-2">
+							<p>{{ item.address }}</p>
+						</div>
+						<div class="col-md-2">
+							<p>{{ item.created_at}}</p>
+						</div>		
+						<div class="col-md-2">
+							<p>{{ item.paid | yesno:"是,否" }}</p>
+						</div>				
+					</div>
+					<hr>
+				{% empty %}
+					<div class="col-md-12" align="center">
+						<em>没有未处理的订单</em>
+					</div>
+				{% endfor %}
+
+				</div>
+			</div>
+
+			<div class=" panel-footer" align="right">
+						<button class="btn btn-warning"><a href="/cart/">回购物车</a></button>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

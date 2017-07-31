@@ -1,12 +1,13 @@
 # coding=utf-8
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from cart.cart import Cart
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from django.contrib import messages
 
-from mysite import models
+from mysite import models, forms
 
 from datetime import date
 
@@ -50,6 +51,7 @@ def cart(request):
     cart = Cart(request)
     return render(request, 'cart.html', dict(cart=cart))
 
+@login_required(login_url='accounts/login/')
 def add_to_cart(request, product_id, quantity):
     try:
         product = models.Product.objects.get(id = product_id)
@@ -65,7 +67,7 @@ def add_to_cart(request, product_id, quantity):
         return redirect(index)
 
 def go_add(request, product_id=0, quantity=1):
-    '''使用ajax添加商品'''
+    '''api, 使用ajax添加商品'''
     if request.method == 'GET' and request.is_ajax():
         try:
             product = models.Product.objects.get(id = product_id)
@@ -80,10 +82,11 @@ def go_add(request, product_id=0, quantity=1):
     return JsonResponse(dict(cart_num=cart.count()))
 
 def go_cart_num(request):
-    '''使用ajax获取cart总数'''
+    '''api, 使用ajax获取cart总数'''
     if request.method == 'GET' and request.is_ajax():
         return JsonResponse(dict(cart_num = Cart(request).count()))
 
+@login_required(login_url='accounts/login/')
 def  remove_from_cart(request, product_id):
     try:
         product = models.Product.objects.get(id = product_id)
@@ -97,6 +100,41 @@ def  remove_from_cart(request, product_id):
     
     return redirect(cart)
 
+@login_required(login_url='accounts/login/')
+def order(request):
+    all_categories = models.Category.objects.all()
+    cart = Cart(request)
+
+    if request.method == 'POST':
+        user = User.objects.get(username = request.user.username)
+        new_oreder = models.Order(user = user)
+        order_form = forms.OrderForm(request.POST, instance = new_oreder)
+
+        if order_form.is_valid():
+            order = order_form.save()
+            messages.add_message(request, messages.SUCCESS, 'order has been built')
+            for item in cart:
+                models.OrderItem.objects.create(order = order,
+                                        product = item.product,
+                                        price = item.product.price,
+                                        quantity = item.quantity)
+            cart.clear()
+            return redirect(my_orders)
+
+    else:
+        order_form = forms.OrderForm()
+
+    return render(request, 'order.html',locals())
+
+
+@login_required(login_url='accounts/login/')
+def my_orders(request):
+    all_categories = models.Category.objects.all()
+    orders = models.Order.objects.filter(user = request.user)
+    for _ in orders:
+        print(_)
+
+    return render(request, 'myorders.html', locals())
     
 
 
